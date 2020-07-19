@@ -22,8 +22,7 @@ app.get("/notes",function (req,res){
 app.get("/api/notes",function (req,res){
     fs.readFile(dbdir + '/db.json','utf8',function(err,data){
        res.send(JSON.parse(data))
-       console.log(JSON.parse(data))
-       console.log(data)
+      
        return JSON.parse(data)
        
     })
@@ -39,11 +38,11 @@ app.get("*",function (req,res){
 
 
 app.post("/api/notes",function(req, res){ 
-    console.log(req.body)
+   
     var id = 0;
     fs.readFile(dbdir + '/db.json','utf8',function(err,data){
         var notes = JSON.parse(data)
-        console.log(notes.length)
+
         id = notes.length +1
         req.body.id = id
       
@@ -54,6 +53,7 @@ app.post("/api/notes",function(req, res){
                 console.log(err)
             }
         })
+        res.send()
     })
     
     
@@ -62,6 +62,27 @@ app.post("/api/notes",function(req, res){
 
     
 })  
+
+app.delete("/api/notes/:id", function(req,res){ 
+    console.log(req.params.id)
+    var deleteid = req.params.id -1;
+    fs.readFile(dbdir + '/db.json','utf8',function(err,data){
+        var notes = JSON.parse(data)
+        notes.splice(deleteid,1);
+        console.log(notes)
+
+
+        
+         save= JSON.stringify(notes)
+         fs.writeFile((dbdir + '/db.json'),save,function(err){
+             if(err){
+                console.log(err)
+        }
+     })
+        res.send()
+    })
+})
+
 
 app.listen(PORT, function() {
     // Log (server-side) when our server has started
